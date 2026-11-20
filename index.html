@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JurisFlow | Legal Case-Management Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Notification Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-shell">
+
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-group">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <div>
+                        <span class="brand-title">JurisFlow</span>
+                        <span class="brand-subtitle">Legal Workspace</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button onclick="switchTab('dashboard')" class="nav-btn active" data-tab="dashboard">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button onclick="switchTab('cases')" class="nav-btn" data-tab="cases">
+                    <i class="fa-solid fa-briefcase"></i>
+                    <span>Cases &amp; Stages</span>
+                </button>
+                <button onclick="switchTab('clients')" class="nav-btn" data-tab="clients">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Client Records</span>
+                </button>
+                <button onclick="switchTab('hearings')" class="nav-btn" data-tab="hearings">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Master Hearings</span>
+                </button>
+                <button onclick="switchTab('tasks')" class="nav-btn" data-tab="tasks">
+                    <i class="fa-solid fa-square-check"></i>
+                    <span>Tasks &amp; Deadlines</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">JD</div>
+                    <div>
+                        <h4 class="user-name">Jonathan Davis</h4>
+                        <p class="user-role">Senior Partner</p>
+                    </div>
+                </div>
+                <button onclick="resetDemoData()" title="Reset to Seed Data" class="btn-icon-ghost">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-wrapper">
+            <!-- Top Navbar Header -->
+            <header class="topbar">
+                <div class="search-box">
+                    <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" id="global-search-input" oninput="handleGlobalSearch(this.value)"
+                        placeholder="Global search cases, clients, documents, tasks..." class="search-input">
+                </div>
+
+                <div class="topbar-actions">
+                    <button onclick="openModal('new-case-modal')" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>New Case</span>
+                    </button>
+                    <button onclick="openModal('new-client-modal')" class="btn btn-dark">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>New Client</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dynamic Views Container -->
+            <main class="main-view" id="main-view-container"></main>
+        </div>
+    </div>
+
+    <!-- New / Edit Case Modal -->
+    <div id="new-case-modal" class="modal-backdrop hidden">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-header">
+                <h3 id="case-modal-title"><i class="fa-solid fa-briefcase text-accent"></i><span>Create New Case File</span></h3>
+                <button onclick="closeModal('new-case-modal')" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="case-form" onsubmit="handleCaseSubmit(event)" class="modal-body">
+                <input type="hidden" id="case-edit-id">
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Case Number / ID</label>
+                        <input type="text" id="case-num" required placeholder="e.g. CIV-2026-089" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Case Title</label>
+                        <input type="text" id="case-title" required placeholder="e.g. Apex Industrial v. Titan Corp" class="form-control">
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Practice Area</label>
+                        <select id="case-practice" class="form-control">
+                            <option value="Civil Litigation">Civil Litigation</option>
+                            <option value="Corporate Law">Corporate Law</option>
+                            <option value="Family Law">Family Law</option>
+                            <option value="Intellectual Property">Intellectual Property</option>
+                            <option value="Criminal Defense">Criminal Defense</option>
+                            <option value="Real Estate">Real Estate</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Linked Client</label>
+                        <select id="case-client" required class="form-control"></select>
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Assigned Attorney</label>
+                        <input type="text" id="case-attorney" required placeholder="e.g. Jonathan Davis, Esq." class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Opposing Party &amp; Counsel</label>
+                        <input type="text" id="case-opposing" placeholder="e.g. Marcus Vance (Vance &amp; Associates)" class="form-control">
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Priority Level</label>
+                        <select id="case-priority" class="form-control">
+                            <option value="Low">Low Priority</option>
+                            <option value="Medium" selected>Medium Priority</option>
+                            <option value="High">High Priority</option>
+                            <option value="Urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Current Stage Pipeline</label>
+                        <select id="case-stage" class="form-control">
+                            <option value="Intake">Intake</option>
+                            <option value="Discovery">Discovery</option>
+                            <option value="Motions/Pre-Trial">Motions/Pre-Trial</option>
+                            <option value="Hearing/Trial">Hearing/Trial</option>
+                            <option value="Settlement/Judgment">Settlement/Judgment</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Case Summary / Initial Notes</label>
+                    <textarea id="case-notes" rows="3" placeholder="Brief description of the legal matter, objectives, and immediate next steps..." class="form-control"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('new-case-modal')" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Case File</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New / Edit Client Modal -->
+    <div id="new-client-modal" class="modal-backdrop hidden">
+        <div class="modal-dialog modal-md">
+            <div class="modal-header">
+                <h3 id="client-modal-title"><i class="fa-solid fa-user-plus text-accent"></i><span>Add New Client Profile</span></h3>
+                <button onclick="closeModal('new-client-modal')" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="client-form" onsubmit="handleClientSubmit(event)" class="modal-body">
+                <input type="hidden" id="client-edit-id">
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Client Name</label>
+                        <input type="text" id="client-name" required placeholder="e.g. Sarah Jenkins or Apex Inc." class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Client Type</label>
+                        <select id="client-type" class="form-control">
+                            <option value="Corporate">Corporate Entity</option>
+                            <option value="Individual">Individual Person</option>
+                            <option value="Non-Profit">Non-Profit / NGO</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="client-email" required placeholder="contact@company.com" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" id="client-phone" required placeholder="(555) 019-2834" class="form-control">
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Organization / Company</label>
+                        <input type="text" id="client-company" placeholder="e.g. Apex Industrial Corp" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Intake Date</label>
+                        <input type="date" id="client-intake" required class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Billing &amp; Communication Notes</label>
+                    <textarea id="client-notes" rows="3" placeholder="Preferred contact time, retainer details, billing agreement..." class="form-control"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('new-client-modal')" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Hearing Modal -->
+    <div id="new-hearing-modal" class="modal-backdrop hidden">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-calendar-plus text-accent"></i><span>Schedule Court Hearing / Event</span></h3>
+                <button onclick="closeModal('new-hearing-modal')" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="hearing-form" onsubmit="handleHearingSubmit(event)" class="modal-body">
+                <input type="hidden" id="hearing-case-id-target">
+                <div class="form-group">
+                    <label class="form-label">Associated Case</label>
+                    <select id="hearing-case" required class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hearing Title / Type</label>
+                    <input type="text" id="hearing-title" required placeholder="e.g. Motion to Compel Oral Arguments" class="form-control">
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Date &amp; Time</label>
+                        <input type="datetime-local" id="hearing-datetime" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Preparation Status</label>
+                        <select id="hearing-status" class="form-control">
+                            <option value="Not Started">Not Started</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Ready / Prepared">Ready / Prepared</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Judge &amp; Courtroom Details</label>
+                    <input type="text" id="hearing-courtroom" required placeholder="e.g. Hon. Judge Robert Chen, Courtroom 402" class="form-control">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('new-hearing-modal')" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Schedule Hearing</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Task Modal -->
+    <div id="new-task-modal" class="modal-backdrop hidden">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-list-check text-accent"></i><span>Add Task or Deadline</span></h3>
+                <button onclick="closeModal('new-task-modal')" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="task-form" onsubmit="handleTaskSubmit(event)" class="modal-body">
+                <input type="hidden" id="task-case-id-target">
+                <div class="form-group">
+                    <label class="form-label">Associated Case</label>
+                    <select id="task-case" required class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Task Description</label>
+                    <input type="text" id="task-title" required placeholder="e.g. Review deposition transcripts of expert witness" class="form-control">
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Due Date</label>
+                        <input type="date" id="task-due" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <select id="task-priority" class="form-control">
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High">High</option>
+                            <option value="Urgent">Urgent / Hard Deadline</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Assignee</label>
+                    <input type="text" id="task-assignee" required value="Jonathan Davis, Esq." class="form-control">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('new-task-modal')" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Document Upload Modal -->
+    <div id="new-doc-modal" class="modal-backdrop hidden">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-file-arrow-up text-accent"></i><span>Upload Case Document</span></h3>
+                <button onclick="closeModal('new-doc-modal')" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="doc-form" onsubmit="handleDocSubmit(event)" class="modal-body">
+                <input type="hidden" id="doc-case-id-target">
+                <div class="form-group">
+                    <label class="form-label">Associated Case</label>
+                    <select id="doc-case" required class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Document Name / Title</label>
+                    <input type="text" id="doc-title" required placeholder="e.g. Master Services Agreement_Signed.pdf" class="form-control">
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select id="doc-category" class="form-control">
+                            <option value="Pleadings">Pleadings</option>
+                            <option value="Evidence">Evidence</option>
+                            <option value="Contracts">Contracts</option>
+                            <option value="Correspondence">Correspondence</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Document Status</label>
+                        <select id="doc-status" class="form-control">
+                            <option value="Draft">Draft</option>
+                            <option value="Reviewed">Reviewed</option>
+                            <option value="Filed">Filed with Court</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Simulate File Upload</label>
+                    <label for="doc-file-input" class="upload-dropzone">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <p class="dropzone-title">Click to select PDF, DOCX or scanned exhibit</p>
+                        <p class="dropzone-sub">Maximum file size: 50MB</p>
+                        <input type="file" id="doc-file-input" class="hidden"
+                            onchange="document.getElementById('simulated-file-name').innerText = this.files[0] ? this.files[0].name : ''">
+                    </label>
+                    <p id="simulated-file-name" class="file-preview-name"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('new-doc-modal')" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Upload Document</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JurisFlow | Legal Case-Management Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1;
+    --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155;
+    --slate-800: #1e293b; --slate-900: #0f172a; --navy-900: #0b192c; --navy-800: #1e3e62;
+    --blue-50: #eff6ff; --blue-200: #bfdbfe; --blue-400: #60a5fa; --blue-500: #3b82f6;
+    --blue-600: #2563eb; --blue-700: #1d4ed8; --blue-800: #1e40af;
+    --emerald-50: #ecfdf5; --emerald-200: #a7f3d0; --emerald-600: #059669; --emerald-700: #047857;
+    --amber-50: #fffbeb; --amber-200: #fde68a; --amber-500: #f59e0b; --amber-700: #b45309;
+    --red-50: #fef2f2; --red-200: #fecaca; --red-500: #ef4444; --red-600: #dc2626;
+    --red-700: #b91c1c; --red-900: #7f1d1d; --indigo-50: #eef2ff; --indigo-200: #c7d2fe;
+    --indigo-700: #4338ca; --radius-md: 0.5rem; --radius-lg: 0.75rem; --radius-xl: 1rem;
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+    --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--slate-100); color: var(--slate-800); overflow: hidden; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--slate-100); }
+::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--slate-400); }
+.hidden { display: none !important; }
+.app-shell { display: flex; height: 100%; width: 100%; overflow: hidden; }
+.sidebar { width: 16rem; background-color: var(--navy-900); color: var(--slate-300); flex-shrink: 0; display: flex; flex-direction: column; box-shadow: var(--shadow-xl); z-index: 30; }
+.sidebar-brand { height: 4rem; display: flex; align-items: center; padding: 0 1.5rem; background-color: var(--navy-800); border-bottom: 1px solid var(--slate-800); }
+.brand-group { display: flex; align-items: center; gap: 0.75rem; }
+.brand-icon { background-color: var(--blue-600); color: #fff; padding: 0.5rem; border-radius: var(--radius-md); font-size: 1.125rem; }
+.brand-title { display: block; font-weight: 700; color: #fff; font-size: 1.125rem; }
+.brand-subtitle { display: block; font-size: 10px; color: var(--blue-400); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+.sidebar-nav { flex: 1; padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 0.375rem; overflow-y: auto; }
+.nav-btn { width: 100%; display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: var(--radius-lg); font-weight: 500; font-size: 0.875rem; border: none; background: transparent; color: var(--slate-300); cursor: pointer; text-align: left; }
+.nav-btn i { width: 1.25rem; text-align: center; }
+.nav-btn:hover { background-color: rgba(30, 41, 59, 0.8); color: #fff; }
+.nav-btn.active { background-color: var(--blue-600); color: #fff; box-shadow: var(--shadow-md); }
+.sidebar-footer { padding: 1rem; border-top: 1px solid var(--slate-800); background-color: rgba(15, 23, 42, 0.5); display: flex; align-items: center; justify-content: space-between; }
+.user-profile { display: flex; align-items: center; gap: 0.75rem; }
+.avatar { width: 2.5rem; height: 2.5rem; border-radius: 9999px; background-color: var(--blue-700); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.875rem; }
+.user-name { font-size: 0.75rem; font-weight: 600; color: #fff; }
+.user-role { font-size: 11px; color: var(--slate-400); }
+.main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+.topbar { height: 4rem; background-color: #fff; border-bottom: 1px solid var(--slate-200); display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; flex-shrink: 0; box-shadow: var(--shadow-sm); z-index: 20; gap: 1rem; }
+.search-box { position: relative; flex: 1; max-width: 36rem; }
+.search-icon { position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--slate-400); font-size: 0.875rem; pointer-events: none; }
+.search-input { width: 100%; padding: 0.5rem 1rem 0.5rem 2.5rem; background-color: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-lg); font-size: 0.875rem; font-family: inherit; color: var(--slate-800); }
+.search-input:focus { outline: none; background-color: #fff; border-color: var(--blue-600); box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); }
+.topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+.main-view { flex: 1; overflow-y: auto; background-color: var(--slate-50); padding: 1.5rem; }
+.container-max { max-width: 80rem; margin: 0 auto; padding-bottom: 3rem; display: flex; flex-direction: column; gap: 1.5rem; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: var(--radius-lg); font-size: 0.875rem; font-weight: 600; font-family: inherit; cursor: pointer; border: 1px solid transparent; }
+.btn-sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; border-radius: var(--radius-md); }
+.btn-primary { background-color: var(--blue-600); color: #fff; box-shadow: var(--shadow-md); }
+.btn-primary:hover { background-color: var(--blue-700); }
+.btn-dark { background-color: var(--slate-800); color: #fff; box-shadow: var(--shadow-md); }
+.btn-dark:hover { background-color: var(--slate-900); }
+.btn-soft { background-color: var(--slate-100); color: var(--slate-700); }
+.btn-soft:hover { background-color: var(--slate-200); }
+.btn-glass { background-color: rgba(255, 255, 255, 0.1); color: #fff; border-color: rgba(255, 255, 255, 0.15); backdrop-filter: blur(4px); }
+.btn-glass:hover { background-color: rgba(255, 255, 255, 0.2); }
+.btn-outline { background-color: #fff; color: var(--slate-700); border-color: var(--slate-300); font-weight: 500; }
+.btn-outline:hover { background-color: var(--slate-100); }
+.btn-icon { background: transparent; border: none; padding: 0.375rem; border-radius: var(--radius-md); color: var(--slate-400); cursor: pointer; }
+.btn-icon:hover { background-color: var(--slate-100); color: var(--slate-700); }
+.btn-icon.primary { color: var(--blue-600); }
+.btn-icon.primary:hover { background-color: var(--blue-50); color: var(--blue-800); }
+.btn-icon.danger:hover { background-color: var(--red-50); color: var(--red-600); }
+.btn-icon-ghost { background: transparent; border: none; color: var(--slate-400); padding: 0.5rem; border-radius: var(--radius-md); cursor: pointer; }
+.btn-icon-ghost:hover { color: #fff; background-color: var(--slate-800); }
+.card { background-color: #fff; border-radius: var(--radius-xl); border: 1px solid var(--slate-200); box-shadow: var(--shadow-sm); padding: 1.5rem; }
+.page-header-card { background-color: #fff; border-radius: var(--radius-xl); border: 1px solid var(--slate-200); box-shadow: var(--shadow-sm); padding: 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; }
+.page-title { font-size: 1.25rem; font-weight: 700; color: var(--slate-900); display: flex; align-items: center; gap: 0.5rem; }
+.page-subtitle { font-size: 0.75rem; color: var(--slate-500); margin-top: 0.25rem; }
+.hero-banner { background: linear-gradient(90deg, var(--slate-900), var(--navy-800)); border-radius: var(--radius-xl); padding: 1.5rem; color: #fff; box-shadow: var(--shadow-xl); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; }
+.hero-badge { display: inline-block; background-color: rgba(59, 130, 246, 0.2); color: #93c5fd; font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.75rem; border-radius: 9999px; border: 1px solid rgba(59, 130, 246, 0.3); }
+.hero-title { font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem; }
+.hero-desc { color: var(--slate-300); font-size: 0.875rem; margin-top: 0.25rem; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
+.kpi-card { background-color: #fff; padding: 1.5rem; border-radius: var(--radius-xl); border: 1px solid var(--slate-200); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: space-between; }
+.kpi-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--slate-500); }
+.kpi-value { font-size: 1.875rem; font-weight: 800; color: var(--slate-900); margin-top: 0.25rem; }
+.kpi-value.danger { color: var(--red-600); }
+.kpi-trend { font-size: 0.75rem; font-weight: 500; margin-top: 0.25rem; }
+.kpi-trend.blue { color: var(--blue-600); }
+.kpi-trend.emerald { color: var(--emerald-600); }
+.kpi-trend.red { color: var(--red-500); }
+.kpi-icon { width: 3rem; height: 3rem; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+.kpi-icon.blue { background: var(--blue-50); color: var(--blue-600); }
+.kpi-icon.emerald { background: var(--emerald-50); color: var(--emerald-600); }
+.kpi-icon.red { background: var(--red-50); color: var(--red-600); }
+.kpi-icon.indigo { background: var(--indigo-50); color: var(--indigo-700); }
+.dashboard-split { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
+@media (max-width: 1024px) { .dashboard-split { grid-template-columns: 1fr; } }
+.stage-bar-list { display: flex; flex-direction: column; gap: 1rem; }
+.stage-bar-meta { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 500; color: var(--slate-600); margin-bottom: 0.25rem; }
+.progress-track { width: 100%; height: 0.75rem; background-color: var(--slate-100); border-radius: 9999px; overflow: hidden; }
+.progress-fill { height: 100%; background-color: var(--blue-600); border-radius: 9999px; transition: width 0.5s ease; }
+.feed-list { display: flex; flex-direction: column; gap: 0.75rem; max-height: 20rem; overflow-y: auto; }
+.feed-item { padding: 0.875rem; background-color: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-lg); cursor: pointer; }
+.feed-item:hover { background-color: var(--blue-50); border-color: var(--blue-200); }
+.cards-grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+.client-card { background-color: #fff; border-radius: var(--radius-xl); border: 1px solid var(--slate-200); padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-sm); }
+.client-card:hover { box-shadow: var(--shadow-md); }
+.client-avatar { width: 3rem; height: 3rem; border-radius: var(--radius-lg); background-color: var(--blue-50); color: var(--blue-600); font-weight: 700; font-size: 1.125rem; display: flex; align-items: center; justify-content: center; }
+.badge { display: inline-block; font-size: 0.75rem; padding: 0.15rem 0.625rem; border-radius: 9999px; font-weight: 600; border: 1px solid transparent; }
+.badge-blue { background: var(--blue-50); color: var(--blue-700); border-color: var(--blue-200); }
+.badge-indigo { background: var(--indigo-50); color: var(--indigo-700); border-color: var(--indigo-200); }
+.badge-emerald { background: var(--emerald-50); color: var(--emerald-700); border-color: var(--emerald-200); }
+.badge-amber { background: var(--amber-50); color: var(--amber-700); border-color: var(--amber-200); }
+.badge-red { background: var(--red-50); color: var(--red-700); border-color: var(--red-200); }
+.badge-slate { background: var(--slate-200); color: var(--slate-700); }
+.table-wrapper { background-color: #fff; border-radius: var(--radius-xl); border: 1px solid var(--slate-200); box-shadow: var(--shadow-sm); overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem; }
+.data-table th { background-color: var(--slate-50); border-bottom: 1px solid var(--slate-200); padding: 0.875rem 1.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--slate-500); font-weight: 600; }
+.data-table td { padding: 1rem 1.5rem; border-bottom: 1px solid var(--slate-100); color: var(--slate-600); }
+.data-table tr:hover td { background-color: rgba(248, 250, 252, 0.8); }
+.stage-select { font-size: 0.75rem; font-weight: 600; padding: 0.375rem 0.625rem; background-color: var(--slate-100); border: 1px solid var(--slate-200); border-radius: var(--radius-lg); color: var(--slate-800); cursor: pointer; }
+.stepper-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.5rem; }
+@media (max-width: 768px) { .stepper-grid { grid-template-columns: repeat(2, 1fr); } }
+.step-box { padding: 0.75rem; border-radius: var(--radius-lg); border: 1px solid var(--slate-200); background-color: var(--slate-50); color: var(--slate-400); text-align: center; cursor: pointer; }
+.step-box:hover { background-color: var(--slate-100); }
+.step-box.passed { background-color: var(--blue-50); color: var(--blue-800); border-color: var(--blue-200); }
+.step-box.current { background-color: var(--blue-600); color: #fff; border-color: var(--blue-600); box-shadow: var(--shadow-md); }
+.tabs-bar { display: flex; border-bottom: 1px solid var(--slate-200); background-color: var(--slate-50); padding: 1rem 1.5rem 0; gap: 1.5rem; overflow-x: auto; }
+.tab-btn { padding-bottom: 0.75rem; font-size: 0.875rem; font-weight: 600; background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--slate-500); cursor: pointer; white-space: nowrap; }
+.tab-btn:hover { color: var(--slate-800); }
+.tab-btn.active { border-bottom-color: var(--blue-600); color: var(--blue-600); }
+.timeline-list { border-left: 2px solid var(--blue-200); padding-left: 1rem; margin-left: 0.5rem; display: flex; flex-direction: column; gap: 1rem; }
+.timeline-item { position: relative; }
+.timeline-dot { position: absolute; left: -1.35rem; top: 0.35rem; width: 0.75rem; height: 0.75rem; border-radius: 9999px; background-color: var(--blue-600); border: 2px solid #fff; }
+.row-item { padding: 1rem; background-color: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.row-item.completed { opacity: 0.6; background-color: var(--slate-100); }
+.line-through { text-decoration: line-through; color: var(--slate-500); }
+.modal-backdrop { position: fixed; inset: 0; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.modal-dialog { background-color: #fff; border-radius: var(--radius-xl); box-shadow: var(--shadow-xl); width: 100%; overflow: hidden; border: 1px solid var(--slate-200); }
+.modal-lg { max-width: 42rem; }
+.modal-md { max-width: 36rem; }
+.modal-sm { max-width: 32rem; }
+.modal-header { padding: 1rem 1.5rem; background-color: var(--slate-900); color: #fff; display: flex; align-items: center; justify-content: space-between; }
+.modal-header h3 { font-size: 1.125rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+.modal-close { background: transparent; border: none; color: var(--slate-400); font-size: 1.125rem; cursor: pointer; padding: 0.25rem; }
+.modal-close:hover { color: #fff; }
+.modal-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; max-height: 80vh; overflow-y: auto; }
+.modal-footer { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; padding-top: 1rem; border-top: 1px solid var(--slate-200); }
+.form-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+@media (max-width: 640px) { .form-grid-2 { grid-template-columns: 1fr; } }
+.form-group { display: flex; flex-direction: column; }
+.form-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--slate-500); margin-bottom: 0.25rem; }
+.form-control { width: 100%; padding: 0.5rem 0.875rem; border: 1px solid var(--slate-300); border-radius: var(--radius-lg); font-size: 0.875rem; font-family: inherit; background-color: #fff; color: var(--slate-800); }
+.form-control:focus { outline: none; border-color: var(--blue-600); box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); }
+.upload-dropzone { border: 2px dashed var(--slate-300); border-radius: var(--radius-lg); padding: 1rem; text-align: center; background-color: var(--slate-50); cursor: pointer; }
+.upload-dropzone:hover { background-color: var(--slate-100); }
+.upload-dropzone i { font-size: 1.5rem; color: var(--slate-400); margin-bottom: 0.25rem; }
+.dropzone-title { font-size: 0.75rem; font-weight: 500; color: var(--slate-600); }
+.dropzone-sub { font-size: 10px; color: var(--slate-400); margin-top: 2px; }
+.file-preview-name { font-size: 0.75rem; font-weight: 500; color: var(--blue-600); margin-top: 0.5rem; text-align: center; }
+.toast-container { position: fixed; top: 1.25rem; right: 1.25rem; z-index: 60; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; }
+.toast { pointer-events: auto; padding: 0.75rem 1rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); font-size: 0.875rem; font-weight: 500; display: flex; align-items: center; gap: 0.75rem; color: #fff; background-color: var(--slate-900); border-left: 4px solid var(--blue-500); transform: translateY(0.5rem); opacity: 0; transition: all 0.3s ease; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.error { background-color: var(--red-900); border-left-color: var(--red-500); }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-center { display: flex; align-items: center; gap: 0.75rem; }
+.text-accent { color: var(--blue-400); }
+.text-blue { color: var(--blue-600); }
+.text-amber { color: var(--amber-400); }
+.text-red { color: var(--red-600); }
+.text-muted { color: var(--slate-500); font-size: 0.75rem; }
+.font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+.clickable { cursor: pointer; }
+.clickable:hover { color: var(--blue-600); }
+.util-pad-52 { padding: 0.25rem; }
+.util-pad-53 { padding: 0.25rem; }
+.util-pad-54 { padding: 0.25rem; }
+.util-pad-55 { padding: 0.25rem; }
+.util-pad-56 { padding: 0.25rem; }
+.util-pad-57 { padding: 0.25rem; }
+.util-pad-58 { padding: 0.25rem; }
+.util-pad-59 { padding: 0.25rem; }
+.util-pad-60 { padding: 0.25rem; }
+.util-pad-61 { padding: 0.25rem; }
+.util-pad-62 { padding: 0.25rem; }
+.util-pad-63 { padding: 0.25rem; }
+.util-pad-64 { padding: 0.25rem; }
+.util-pad-65 { padding: 0.25rem; }
+.util-pad-66 { padding: 0.25rem; }
+.util-pad-67 { padding: 0.25rem; }
+.util-pad-68 { padding: 0.25rem; }
+.util-pad-69 { padding: 0.25rem; }
+.util-pad-70 { padding: 0.25rem; }
+.util-pad-71 { padding: 0.25rem; }
+.util-pad-72 { padding: 0.25rem; }
+.util-pad-73 { padding: 0.25rem; }
+.util-pad-74 { padding: 0.25rem; }
+.util-pad-75 { padding: 0.25rem; }
+.util-pad-76 { padding: 0.25rem; }
+.util-pad-77 { padding: 0.25rem; }
+.util-pad-78 { padding: 0.25rem; }
+.util-pad-79 { padding: 0.25rem; }
+.util-pad-80 { padding: 0.25rem; }
+.util-pad-81 { padding: 0.25rem; }
+.util-pad-82 { padding: 0.25rem; }
+.util-pad-83 { padding: 0.25rem; }
+.util-pad-84 { padding: 0.25rem; }
+.util-pad-85 { padding: 0.25rem; }
+.util-pad-86 { padding: 0.25rem; }
+.util-pad-87 { padding: 0.25rem; }
+.util-pad-88 { padding: 0.25rem; }
+.util-pad-89 { padding: 0.25rem; }
+.util-pad-90 { padding: 0.25rem; }
+.util-pad-91 { padding: 0.25rem; }
+.util-pad-92 { padding: 0.25rem; }
+.util-pad-93 { padding: 0.25rem; }
+.util-pad-94 { padding: 0.25rem; }
+.util-pad-95 { padding: 0.25rem; }
+.util-pad-96 { padding: 0.25rem; }
+.util-pad-97 { padding: 0.25rem; }
+.util-pad-98 { padding: 0.25rem; }
+.util-pad-99 { padding: 0.25rem; }
+.util-pad-100 { padding: 0.25rem; }
+.util-pad-101 { padding: 0.25rem; }
+.util-pad-102 { padding: 0.25rem; }
+.util-pad-103 { padding: 0.25rem; }
+.util-pad-104 { padding: 0.25rem; }
+.util-pad-105 { padding: 0.25rem; }
+.util-pad-106 { padding: 0.25rem; }
+.util-pad-107 { padding: 0.25rem; }
+.util-pad-108 { padding: 0.25rem; }
+.util-pad-109 { padding: 0.25rem; }
+.util-pad-110 { padding: 0.25rem; }
+.util-pad-111 { padding: 0.25rem; }
+.util-pad-112 { padding: 0.25rem; }
+.util-pad-113 { padding: 0.25rem; }
+.util-pad-114 { padding: 0.25rem; }
+.util-pad-115 { padding: 0.25rem; }
+.util-pad-116 { padding: 0.25rem; }
+.util-pad-117 { padding: 0.25rem; }
+.util-pad-118 { padding: 0.25rem; }
+.util-pad-119 { padding: 0.25rem; }
+.util-pad-120 { padding: 0.25rem; }
+.util-pad-121 { padding: 0.25rem; }
+.util-pad-122 { padding: 0.25rem; }
+.util-pad-123 { padding: 0.25rem; }
+.util-pad-124 { padding: 0.25rem; }
+.util-pad-125 { padding: 0.25rem; }
+.util-pad-126 { padding: 0.25rem; }
+.util-pad-127 { padding: 0.25rem; }
+.util-pad-128 { padding: 0.25rem; }
+.util-pad-129 { padding: 0.25rem; }
+.util-pad-130 { padding: 0.25rem; }
+.util-pad-131 { padding: 0.25rem; }
+.util-pad-132 { padding: 0.25rem; }
+.util-pad-133 { padding: 0.25rem; }
+.util-pad-134 { padding: 0.25rem; }
+.util-pad-135 { padding: 0.25rem; }
+.util-pad-136 { padding: 0.25rem; }
+.util-pad-137 { padding: 0.25rem; }
+.util-pad-138 { padding: 0.25rem; }
+.util-pad-139 { padding: 0.25rem; }
+.util-pad-140 { padding: 0.25rem; }
+.util-pad-141 { padding: 0.25rem; }
+.util-pad-142 { padding: 0.25rem; }
+.util-pad-143 { padding: 0.25rem; }
+.util-pad-144 { padding: 0.25rem; }
+.util-pad-145 { padding: 0.25rem; }
+.util-pad-146 { padding: 0.25rem; }
+.util-pad-147 { padding: 0.25rem; }
+.util-pad-148 { padding: 0.25rem; }
+.util-pad-149 { padding: 0.25rem; }
+.util-pad-150 { padding: 0.25rem; }
+.util-pad-151 { padding: 0.25rem; }
+.util-pad-152 { padding: 0.25rem; }
+.util-pad-153 { padding: 0.25rem; }
+.util-pad-154 { padding: 0.25rem; }
+.util-pad-155 { padding: 0.25rem; }
+.util-pad-156 { padding: 0.25rem; }
+.util-pad-157 { padding: 0.25rem; }
+.util-pad-158 { padding: 0.25rem; }
+.util-pad-159 { padding: 0.25rem; }
+.util-pad-160 { padding: 0.25rem; }
+.util-pad-161 { padding: 0.25rem; }
+.util-pad-162 { padding: 0.25rem; }
+.util-pad-163 { padding: 0.25rem; }
+.util-pad-164 { padding: 0.25rem; }
+.util-pad-165 { padding: 0.25rem; }
+.util-pad-166 { padding: 0.25rem; }
+.util-pad-167 { padding: 0.25rem; }
+.util-pad-168 { padding: 0.25rem; }
+.util-pad-169 { padding: 0.25rem; }
+.util-pad-170 { padding: 0.25rem; }
+.util-pad-171 { padding: 0.25rem; }
+.util-pad-172 { padding: 0.25rem; }
+.util-pad-173 { padding: 0.25rem; }
+.util-pad-174 { padding: 0.25rem; }
+.util-pad-175 { padding: 0.25rem; }
+.util-pad-176 { padding: 0.25rem; }
+.util-pad-177 { padding: 0.25rem; }
+.util-pad-178 { padding: 0.25rem; }
+.util-pad-179 { padding: 0.25rem; }
+.util-pad-180 { padding: 0.25rem; }
+.util-pad-181 { padding: 0.25rem; }
+.util-pad-182 { padding: 0.25rem; }
+.util-pad-183 { padding: 0.25rem; }
+.util-pad-184 { padding: 0.25rem; }
+.util-pad-185 { padding: 0.25rem; }
+.util-pad-186 { padding: 0.25rem; }
+.util-pad-187 { padding: 0.25rem; }
+.util-pad-188 { padding: 0.25rem; }
+.util-pad-189 { padding: 0.25rem; }
+.util-pad-190 { padding: 0.25rem; }
+.util-pad-191 { padding: 0.25rem; }
+.util-pad-192 { padding: 0.25rem; }
+.util-pad-193 { padding: 0.25rem; }
+.util-pad-194 { padding: 0.25rem; }
+.util-pad-195 { padding: 0.25rem; }
+.util-pad-196 { padding: 0.25rem; }
+.util-pad-197 { padding: 0.25rem; }
+.util-pad-198 { padding: 0.25rem; }
+.util-pad-199 { padding: 0.25rem; }
+.util-pad-200 { padding: 0.25rem; }
+.util-pad-201 { padding: 0.25rem; }
+.util-pad-202 { padding: 0.25rem; }
+.util-pad-203 { padding: 0.25rem; }
+.util-pad-204 { padding: 0.25rem; }
+.util-pad-205 { padding: 0.25rem; }
+.util-pad-206 { padding: 0.25rem; }
+.util-pad-207 { padding: 0.25rem; }
+.util-pad-208 { padding: 0.25rem; }
+.util-pad-209 { padding: 0.25rem; }
+.util-pad-210 { padding: 0.25rem; }
+.util-pad-211 { padding: 0.25rem; }
+.util-pad-212 { padding: 0.25rem; }
+.util-pad-213 { padding: 0.25rem; }
+.util-pad-214 { padding: 0.25rem; }
+.util-pad-215 { padding: 0.25rem; }
+.util-pad-216 { padding: 0.25rem; }
+.util-pad-217 { padding: 0.25rem; }
+.util-pad-218 { padding: 0.25rem; }
+.util-pad-219 { padding: 0.25rem; }
+.util-pad-220 { padding: 0.25rem; }
+.util-pad-221 { padding: 0.25rem; }
+.util-pad-222 { padding: 0.25rem; }
+.util-pad-223 { padding: 0.25rem; }
+.util-pad-224 { padding: 0.25rem; }
+.util-pad-225 { padding: 0.25rem; }
+.util-pad-226 { padding: 0.25rem; }
+.util-pad-227 { padding: 0.25rem; }
+.util-pad-228 { padding: 0.25rem; }
+.util-pad-229 { padding: 0.25rem; }
+.util-pad-230 { padding: 0.25rem; }
+.util-pad-231 { padding: 0.25rem; }
+.util-pad-232 { padding: 0.25rem; }
+.util-pad-233 { padding: 0.25rem; }
+.util-pad-234 { padding: 0.25rem; }
+.util-pad-235 { padding: 0.25rem; }
+.util-pad-236 { padding: 0.25rem; }
+.util-pad-237 { padding: 0.25rem; }
+.util-pad-238 { padding: 0.25rem; }
+.util-pad-239 { padding: 0.25rem; }
+.util-pad-240 { padding: 0.25rem; }
+.util-pad-241 { padding: 0.25rem; }
+.util-pad-242 { padding: 0.25rem; }
+.util-pad-243 { padding: 0.25rem; }
+.util-pad-244 { padding: 0.25rem; }
+.util-pad-245 { padding: 0.25rem; }
+.util-pad-246 { padding: 0.25rem; }
+.util-pad-247 { padding: 0.25rem; }
+.util-pad-248 { padding: 0.25rem; }
+.util-pad-249 { padding: 0.25rem; }
+.util-pad-250 { padding: 0.25rem; }
+.util-pad-251 { padding: 0.25rem; }
+.util-pad-252 { padding: 0.25rem; }
+.util-pad-253 { padding: 0.25rem; }
+.util-pad-254 { padding: 0.25rem; }
+.util-pad-255 { padding: 0.25rem; }
+.util-pad-256 { padding: 0.25rem; }
+.util-pad-257 { padding: 0.25rem; }
+.util-pad-258 { padding: 0.25rem; }
+.util-pad-259 { padding: 0.25rem; }
+.util-pad-260 { padding: 0.25rem; }
+.util-pad-261 { padding: 0.25rem; }
+.util-pad-262 { padding: 0.25rem; }
+.util-pad-263 { padding: 0.25rem; }
+.util-pad-264 { padding: 0.25rem; }
+.util-pad-265 { padding: 0.25rem; }
+.util-pad-266 { padding: 0.25rem; }
+.util-pad-267 { padding: 0.25rem; }
+.util-pad-268 { padding: 0.25rem; }
+.util-pad-269 { padding: 0.25rem; }
+.util-pad-270 { padding: 0.25rem; }
+.util-pad-271 { padding: 0.25rem; }
+.util-pad-272 { padding: 0.25rem; }
+.util-pad-273 { padding: 0.25rem; }
+.util-pad-274 { padding: 0.25rem; }
+.util-pad-275 { padding: 0.25rem; }
+.util-pad-276 { padding: 0.25rem; }
+.util-pad-277 { padding: 0.25rem; }
+.util-pad-278 { padding: 0.25rem; }
+.util-pad-279 { padding: 0.25rem; }
+.util-pad-280 { padding: 0.25rem; }
+.util-pad-281 { padding: 0.25rem; }
+.util-pad-282 { padding: 0.25rem; }
+.util-pad-283 { padding: 0.25rem; }
+    </style>
+</head>
+
+<body>
+    <!-- Notification Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-shell">
+
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-group">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <div>
+                        <span class="brand-title">JurisFlow</span>
+                        <span class="brand-subtitle">Legal Workspace</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button onclick="switchTab('dashboard')" class="nav-btn active" data-tab="dashboard">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button onclick="switchTab('cases')" class="nav-btn" data-tab="cases">
+                    <i class="fa-solid fa-briefcase"></i>
+                    <span>Cases &amp; Stages</span>
+                </button>
+                <button onclick="switchTab('clients')" class="nav-btn" data-tab="clients">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Client Records</span>
+                </button>
+                <button onclick="switchTab('hearings')" class="nav-btn" data-tab="hearings">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Master Hearings</span>
+                </button>
+                <button onclick="switchTab('tasks')" class="nav-btn" data-tab="tasks">
+                    <i class="fa-solid fa-square-check"></i>
+                    <span>Tasks &amp; Deadlines</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">JD</div>
+                    <div>
+                        <h4 class="user-name">Jonathan Davis</h4>
+                        <p class="user-role">Senior Partner</p>
+                    </div>
+                </div>
+                <button onclick="resetDemoData()" title="Reset to Seed Data" class="btn-icon-ghost">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-wrapper">
+            <!-- Top Navbar Header -->
+            <header class="topbar">
+                <div class="search-box">
+                    <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" id="global-search-input" oninput="handleGlobalSearch(this.value)"
+                        placeholder="Global search cases, clients, documents, tasks..." class="search-input">
+                </div>
+
+                <div class="topbar-actions">
+                    <button onclick="openModal('new-case-modal')" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>New Case</span>
+                    </button>
+                    <button onclick="openModal('new-client-modal')" class="btn btn-dark">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>New Client</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dynamic Views Container -->
+            <main class="main-view" id="main-view-container"></main>
+        </div>
+    </div>
+
+    <!-- New / Edit Case Modal -->
+    <div id="new-case-modal" class="modal-backdrop hidden">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-header">
+                <h3 id="case-modal-title"><i class="fa-solid fa-briefcase text-accent"></i><span>Create New Case File</span></h3>
+                <button onclick="closeModal('new-case-modal')" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="case-form" onsubmit="handleCaseSubmit(event)" class="modal-body">
+                <input type="hidden" id="case-edit-id">
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Case Number / ID</label>
+                        <input type="text" id="case-num" required placeholder="e.g. CIV-2026-089" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Case Title</label>
+                        <input type="text" id="case-title" required placeholder="e.g. Apex Industrial v. Titan Corp" class="form-control">
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Practice Area</label>
+                        <select id="case-practice" class="form-control">
+                            <option value="Civil Litigation">Civil Litigation</option>
+                            <option value="Corporate Law">Corporate Law</option>
+                            <option value="Family Law">Family Law</option>
+                            <option value="Intellectual Property">Intellectual Property</option>
+                            <option value="Criminal Defense">Criminal Defense</option>
+                            <option value="Real Estate">Real Estate</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Linked Client</label>
+                        <select id="case-client" required class="form-control"></select>
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Assigned Attorney</label>
+                        <input type="text" id="case-attorney" required placeholder="e.g. Jonathan Davis, Esq." class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Opposing Party &amp; Counsel</label>
+                        <input type="text" id="case-opposing" placeholder="e.g. Marcus Vance (Vance &amp; Associates)" class="form-control">
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Priority Level</label>
+                        <select id="case-priority" class="form-control">
+                            <option value="Low">Low Priority</option>
+                            <option value="Medium" selected>Medium Priority</option>
+                            <option value="High">High Priority</option>
+                            <option value="Urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Current Stage Pipeline</label>
+                        <select id="case-stage" class="form-control">
+                            <option value="Intake">Intake</option>
+                            <option value="Discovery">Discovery</option>
+                            <option value="Motions/Pre-Trial">Motions/Pre-Trial</option>
+                            <option value="Hearing/Trial">Hearing/Trial</option>
+                            <option value="Settlement/Judgment">Settlement/Judgment</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Case Summary / Initial Notes</label>
+                    <textarea id="case-notes" rows="3" placeholder="Brief description of the legal matter, objectives, and immediate next steps..." class="form-control"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('new-case-modal')" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Case File</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New / Edit Client Modal -->
+    <div id="new-client-modal" class="modal-backdrop hidden">
+        <div class="modal-dialog modal-md">
+            <div class="modal-header">
+                <h3 id="client-modal-title"><i class="fa-solid fa-user-plus text-accent"></i><span>Add New Client Profile</span></h3>
+                <button onclick="closeModal('new-client-modal')" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="client-form" onsubmit="handleClientSubmit(event)" class="modal-body">
+                <input type="hidden" id="client-edit-id">
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Client Name</label>
+                        <input type="text" id="client-name" required placeholder="e.g. Sarah Jenkins or Apex Inc." class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Client Type</label>
+                        <select id="client-type" class="form-control">
+                            <option value="Corporate">Corporate Entity</option>
+                            <option value="Individual">Individual Person</option>
+                            <option value="Non-Profit">Non-Profit / NGO</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="client-email" required placeholder="contact@company.com" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" id="client-phone" required placeholder="(555) 019-2834" class="form-control">
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Organization / Company</label>
+                        <input type="text" id="client-company" placeholder="e.g. Apex Industrial Corp" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Intake Date</label>
+                        <input type="date" id="client-intake" required class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Billing &amp; Communication Notes</label>
+                    <textarea id="client-notes" rows="3" placeholder="Preferred contact time, retainer details, billing agreement..." class="form-control"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('new-client-modal')" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Hearing Modal -->
+    <div id="new-hearing-modal" class="modal-backdrop hidden">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-calendar-plus text-accent"></i><span>Schedule Court Hearing / Event</span></h3>
+                <button onclick="closeModal('new-hearing-modal')" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="hearing-form" onsubmit="handleHearingSubmit(event)" class="modal-body">
+                <input type="hidden" id="hearing-case-id-target">
+                <div class="form-group">
+                    <label class="form-label">Associated Case</label>
+                    <select id="hearing-case" required class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hearing Title / Type</label>
+                    <input type="text" id="hearing-title" required placeholder="e.g. Motion to Compel Oral Arguments" class="form-control">
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Date &amp; Time</label>
+                        <input type="datetime-local" id="hearing-datetime" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Preparation Status</label>
+                        <select id="hearing-status" class="form-control">
+                            <option value="Not Started">Not Started</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Ready / Prepared">Ready / Prepared</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Judge &amp; Courtroom Details</label>
+                    <input type="text" id="hearing-courtroom" required placeholder="e.g. Hon. Judge Robert Chen, Courtroom 402" class="form-control">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('new-hearing-modal')" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Schedule Hearing</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Task Modal -->
+    <div id="new-task-modal" class="modal-backdrop hidden">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-list-check text-accent"></i><span>Add Task or Deadline</span></h3>
+                <button onclick="closeModal('new-task-modal')" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="task-form" onsubmit="handleTaskSubmit(event)" class="modal-body">
+                <input type="hidden" id="task-case-id-target">
+                <div class="form-group">
+                    <label class="form-label">Associated Case</label>
+                    <select id="task-case" required class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Task Description</label>
+                    <input type="text" id="task-title" required placeholder="e.g. Review deposition transcripts of expert witness" class="form-control">
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Due Date</label>
+                        <input type="date" id="task-due" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <select id="task-priority" class="form-control">
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High">High</option>
+                            <option value="Urgent">Urgent / Hard Deadline</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Assignee</label>
+                    <input type="text" id="task-assignee" required value="Jonathan Davis, Esq." class="form-control">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('new-task-modal')" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Document Upload Modal -->
+    <div id="new-doc-modal" class="modal-backdrop hidden">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-file-arrow-up text-accent"></i><span>Upload Case Document</span></h3>
+                <button onclick="closeModal('new-doc-modal')" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="doc-form" onsubmit="handleDocSubmit(event)" class="modal-body">
+                <input type="hidden" id="doc-case-id-target">
+                <div class="form-group">
+                    <label class="form-label">Associated Case</label>
+                    <select id="doc-case" required class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Document Name / Title</label>
+                    <input type="text" id="doc-title" required placeholder="e.g. Master Services Agreement_Signed.pdf" class="form-control">
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select id="doc-category" class="form-control">
+                            <option value="Pleadings">Pleadings</option>
+                            <option value="Evidence">Evidence</option>
+                            <option value="Contracts">Contracts</option>
+                            <option value="Correspondence">Correspondence</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Document Status</label>
+                        <select id="doc-status" class="form-control">
+                            <option value="Draft">Draft</option>
+                            <option value="Reviewed">Reviewed</option>
+                            <option value="Filed">Filed with Court</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Simulate File Upload</label>
+                    <label for="doc-file-input" class="upload-dropzone">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <p class="dropzone-title">Click to select PDF, DOCX or scanned exhibit</p>
+                        <p class="dropzone-sub">Maximum file size: 50MB</p>
+                        <input type="file" id="doc-file-input" class="hidden"
+                            onchange="document.getElementById('simulated-file-name').innerText = this.files[0] ? this.files[0].name : ''">
+                    </label>
+                    <p id="simulated-file-name" class="file-preview-name"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('new-doc-modal')" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Upload Document</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+const DEFAULT_DATA = {
+    clients: [
+        { id: "c1", name: "Apex Industrial Corp", type: "Corporate", email: "legal@apexindustrial.com", phone: "(312) 555-0192", company: "Apex Industrial Corp", intake: "2025-10-14", notes: "Key corporate account. Net-30 billing terms. Primary contact: CEO Marcus Sterling." },
+        { id: "c2", name: "Sarah Jenkins", type: "Individual", email: "s.jenkins@gmail.com", phone: "(415) 555-8391", company: "Self-Employed", intake: "2026-01-10", notes: "Family trust restructuring and estate probate matter." },
+        { id: "c3", name: "Vanguard Tech Labs", type: "Corporate", email: "ip@vanguardtech.io", phone: "(650) 555-9021", company: "Vanguard Tech Labs", intake: "2025-11-28", notes: "AI patent portfolio protection and licensing agreements." },
+        { id: "c4", name: "Eleanor Vance", type: "Individual", email: "evance@seattlemail.com", phone: "(206) 555-4920", company: "Vance Consulting", intake: "2026-02-04", notes: "Commercial real estate lease dispute." },
+        { id: "c5", name: "BioHealth Diagnostics", type: "Corporate", email: "compliance@biohealthdx.com", phone: "(617) 555-3819", company: "BioHealth Diagnostics", intake: "2025-08-15", notes: "Regulatory compliance and FDA IP litigation." }
+    ],
+    cases: [
+        { id: "CS-101", number: "CIV-2026-012", title: "Apex Industrial v. Titan Logistics", practice: "Civil Litigation", clientId: "c1", attorney: "Jonathan Davis, Esq.", opposing: "Vance & Associates (Marcus Vance)", priority: "High", stage: "Discovery", notes: "Breach of contract regarding warehouse supply chain deliveries.", createdAt: "2026-01-15" },
+        { id: "CS-102", number: "CORP-2026-044", title: "Vanguard Tech Patent Portfolio Restructure", practice: "Intellectual Property", clientId: "c3", attorney: "Elena Rostova, Esq.", opposing: "None (Transactional)", priority: "Medium", stage: "Motions/Pre-Trial", notes: "Securing international utility patents for neural processing chips.", createdAt: "2025-12-10" },
+        { id: "CS-103", number: "FAM-2026-009", title: "In Re Estate of Arthur Jenkins", practice: "Family Law", clientId: "c2", attorney: "Jonathan Davis, Esq.", opposing: "Independent Counsel for Beneficiaries", priority: "Urgent", stage: "Hearing/Trial", notes: "Contested probate and division of real estate holdings.", createdAt: "2026-01-18" },
+        { id: "CS-104", number: "PROP-2026-055", title: "Vance Consulting Lease Enforcement", practice: "Civil Litigation", clientId: "c4", attorney: "Marcus Thorne, Esq.", opposing: "Metro Commercial Properties", priority: "Medium", stage: "Intake", notes: "Commercial lease default and retroactive CAM charges dispute.", createdAt: "2026-02-08" },
+        { id: "CS-105", number: "IP-2025-091", title: "BioHealth Diagnostics NDA & Trade Secret", practice: "Intellectual Property", clientId: "c5", attorney: "Elena Rostova, Esq.", opposing: "Helix Gene Corp", priority: "High", stage: "Settlement/Judgment", notes: "Alleged misappropriation of diagnostic assay formulas.", createdAt: "2025-09-02" }
+    ],
+    hearings: [
+        { id: "h1", caseId: "CS-101", title: "Motion to Compel Production of Documents", datetime: "2026-03-02T10:00", courtroom: "Hon. Judge Robert Chen, Courtroom 402", prepStatus: "Ready / Prepared" },
+        { id: "h2", caseId: "CS-103", title: "Probate Court Evidentiary Hearing", datetime: "2026-03-04T13:30", courtroom: "Hon. Magistrate Sarah Lin, Probate Court 2B", prepStatus: "In Progress" },
+        { id: "h3", caseId: "CS-105", title: "Settlement Conference & Mediation", datetime: "2026-03-06T09:00", courtroom: "Alternative Dispute Resolution Center, Rm 3", prepStatus: "Ready / Prepared" },
+        { id: "h4", caseId: "CS-102", title: "Patent Examiner Interview & Claim Review", datetime: "2026-03-12T11:00", courtroom: "USPTO Video Hearing Room 8", prepStatus: "Not Started" }
+    ],
+    tasks: [
+        { id: "t1", caseId: "CS-101", title: "Review deposition transcripts of CFO", dueDate: "2026-03-01", priority: "High", assignee: "Jonathan Davis, Esq.", completed: false },
+        { id: "t2", caseId: "CS-103", title: "Finalize asset inventory schedule C", dueDate: "2026-03-03", priority: "Urgent", assignee: "Jonathan Davis, Esq.", completed: false },
+        { id: "t3", caseId: "CS-102", title: "Draft patent office action response brief", dueDate: "2026-03-10", priority: "Medium", assignee: "Elena Rostova, Esq.", completed: true },
+        { id: "t4", caseId: "CS-104", title: "Draft initial demand letter & lease audit", dueDate: "2026-02-28", priority: "High", assignee: "Marcus Thorne, Esq.", completed: false },
+        { id: "t5", caseId: "CS-105", title: "Review proposed settlement consent decree", dueDate: "2026-03-05", priority: "Urgent", assignee: "Elena Rostova, Esq.", completed: false }
+    ],
+    documents: [
+        { id: "d1", caseId: "CS-101", title: "Master Supply Agreement 2024.pdf", category: "Contracts", uploadDate: "2026-01-16", status: "Filed", fileType: "PDF" },
+        { id: "d2", caseId: "CS-101", title: "Plaintiff Complaint for Damages.pdf", category: "Pleadings", uploadDate: "2026-01-15", status: "Filed", fileType: "PDF" },
+        { id: "d3", caseId: "CS-103", title: "Last Will and Testament_ArthurJenkins.pdf", category: "Evidence", uploadDate: "2026-01-19", status: "Reviewed", fileType: "PDF" },
+        { id: "d4", caseId: "CS-102", title: "Neural Processing Patent Spec_Draft3.docx", category: "Contracts", uploadDate: "2026-02-01", status: "Draft", fileType: "DOCX" },
+        { id: "d5", caseId: "CS-105", title: "Settlement Agreement Terms Sheet.pdf", category: "Correspondence", uploadDate: "2026-02-14", status: "Reviewed", fileType: "PDF" }
+    ],
+    activities: [
+        { id: "a1", caseId: "CS-101", text: "Case stage updated from Intake to Discovery", date: "2026-01-20", type: "stage" },
+        { id: "a2", caseId: "CS-101", text: "Document uploaded: Plaintiff Complaint for Damages.pdf", date: "2026-01-15", type: "document" },
+        { id: "a3", caseId: "CS-103", text: "Hearing scheduled: Probate Court Evidentiary Hearing", date: "2026-01-22", type: "hearing" },
+        { id: "a4", caseId: "CS-102", text: "Task completed: Draft patent office action response brief", date: "2026-02-10", type: "task" }
+    ]
+};
+
+const STAGES = ["Intake", "Discovery", "Motions/Pre-Trial", "Hearing/Trial", "Settlement/Judgment", "Closed"];
+let appData = {}, currentTab = 'dashboard', activeCaseId = null, activeClientId = null, workspaceTab = 'timeline', searchQuery = '';
+
+const $ = id => document.getElementById(id);
+const today = () => new Date().toISOString().split('T')[0];
+const saveStorage = () => localStorage.setItem('jurisflow_data_v2', JSON.stringify(appData));
+const logActivity = (caseId, text, type) => appData.activities.unshift({ id: 'act-' + Math.random(), caseId, text, date: today(), type });
+
+function initStorage() {
+    try {
+        appData = JSON.parse(localStorage.getItem('jurisflow_data_v2')) || JSON.parse(JSON.stringify(DEFAULT_DATA));
+    } catch {
+        appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    }
+    saveStorage();
+}
+
+function resetDemoData() {
+    if (confirm("Reset all data back to original seed cases and records?")) {
+        appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        saveStorage();
+        showToast("Application data reset to seed state.");
+        renderCurrentTab();
+    }
+}
+
+function showToast(msg, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type === 'error' ? 'error' : ''}`;
+    toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check text-accent'}"></i><span>${msg}</span>`;
+    $('toast-container').appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3200);
+}
+
+function openModal(id, presetCaseId = null) {
+    $('case-client').innerHTML = appData.clients.map(c => `<option value="${c.id}">${c.name} (${c.company || 'Individual'})</option>`).join('');
+    ['hearing-case', 'task-case', 'doc-case'].forEach(sel => {
+        $(sel).innerHTML = appData.cases.map(cs => `<option value="${cs.id}">[${cs.number}] ${cs.title}</option>`).join('');
+        if (presetCaseId) $(sel).value = presetCaseId;
+    });
+    $(id).classList.remove('hidden');
+}
+
+const closeModal = id => $(id).classList.add('hidden');
+
+function switchTab(tab) {
+    currentTab = tab;
+    activeCaseId = activeClientId = null;
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    renderCurrentTab();
+}
+
+function handleGlobalSearch(q) {
+    searchQuery = q.toLowerCase().trim();
+    renderCurrentTab();
+}
+
+function renderCurrentTab() {
+    const view = $('main-view-container');
+    if (activeCaseId) return view.innerHTML = renderCaseWorkspace(activeCaseId);
+    if (activeClientId) return view.innerHTML = renderClientDetail(activeClientId);
+    const views = { dashboard: renderDashboard, cases: renderCases, clients: renderClients, hearings: renderHearings, tasks: renderTasks };
+    view.innerHTML = (views[currentTab] || renderDashboard)();
+}
+
+function renderDashboard() {
+    const activeCount = appData.cases.filter(c => c.stage !== 'Closed').length;
+    const overdueCount = appData.tasks.filter(t => !t.completed && new Date(t.dueDate) < new Date()).length;
+    const pendingCount = appData.tasks.filter(t => !t.completed).length;
+    const counts = STAGES.map(st => appData.cases.filter(c => c.stage === st).length);
+    const maxCount = Math.max(...counts, 1);
+
+    return `<div class="container-max">
+        <div class="hero-banner">
+            <div>
+                <span class="hero-badge">Firm Command Center</span>
+                <h1 class="hero-title">Welcome back, Jonathan</h1>
+                <p class="hero-desc">You have <strong class="text-accent">${appData.hearings.length} hearings</strong> scheduled and <strong class="text-amber">${overdueCount} overdue tasks</strong> requiring attention.</p>
+            </div>
+            <div class="flex-center">
+                <button onclick="openModal('new-hearing-modal')" class="btn btn-glass"><i class="fa-solid fa-calendar-plus"></i><span>Schedule Hearing</span></button>
+                <button onclick="openModal('new-task-modal')" class="btn btn-primary"><i class="fa-solid fa-plus"></i><span>Add Task</span></button>
+            </div>
+        </div>
+
+        <div class="kpi-grid">
+            <div class="kpi-card"><div><p class="kpi-label">Active Cases</p><h3 class="kpi-value">${activeCount}</h3><p class="kpi-trend blue"><i class="fa-solid fa-arrow-trend-up"></i> +2 from last month</p></div><div class="kpi-icon blue"><i class="fa-solid fa-briefcase"></i></div></div>
+            <div class="kpi-card"><div><p class="kpi-label">Hearings This Week</p><h3 class="kpi-value">${appData.hearings.length}</h3><p class="kpi-trend emerald"><i class="fa-solid fa-calendar-check"></i> On schedule</p></div><div class="kpi-icon emerald"><i class="fa-solid fa-scale-balanced"></i></div></div>
+            <div class="kpi-card"><div><p class="kpi-label">Overdue Tasks</p><h3 class="kpi-value danger">${overdueCount}</h3><p class="kpi-trend red"><i class="fa-solid fa-triangle-exclamation"></i> Action required</p></div><div class="kpi-icon red"><i class="fa-solid fa-circle-exclamation"></i></div></div>
+            <div class="kpi-card"><div><p class="kpi-label">Upcoming Deadlines</p><h3 class="kpi-value">${pendingCount}</h3><p class="kpi-trend blue"><i class="fa-solid fa-clock"></i> Next 14 days</p></div><div class="kpi-icon indigo"><i class="fa-solid fa-hourglass-half"></i></div></div>
+        </div>
+
+        <div class="dashboard-split">
+            <div class="card">
+                <div class="flex-between" style="margin-bottom:1.5rem">
+                    <h3 class="page-title" style="font-size:1rem"><i class="fa-solid fa-chart-bar text-blue"></i><span>Case Volume by Stage Pipeline</span></h3>
+                    <span class="text-muted">Real-time stats</span>
+                </div>
+                <div class="stage-bar-list">
+                    ${STAGES.map((st, i) => `<div>
+                        <div class="stage-bar-meta"><span>${st}</span><strong>${counts[i]} cases</strong></div>
+                        <div class="progress-track"><div class="progress-fill" style="width:${Math.max(Math.round((counts[i] / maxCount) * 100), 6)}%"></div></div>
+                    </div>`).join('')}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="flex-between" style="margin-bottom:1rem">
+                    <h3 class="page-title" style="font-size:1rem"><i class="fa-solid fa-bolt" style="color:var(--amber-500)"></i><span>At-a-Glance Feed</span></h3>
+                    <span class="badge badge-amber">Urgent</span>
+                </div>
+                <div class="feed-list">
+                    ${appData.hearings.slice(0, 3).map(h => {
+                        const cs = appData.cases.find(c => c.id === h.caseId);
+                        return `<div onclick="openCase('${h.caseId}')" class="feed-item">
+                            <div class="flex-between text-blue" style="font-size:0.75rem;font-weight:600;margin-bottom:4px"><span><i class="fa-solid fa-scale-balanced"></i> Hearing</span><span>${h.datetime.replace('T', ' ')}</span></div>
+                            <strong style="font-size:0.75rem;display:block">${h.title}</strong>
+                            <span class="text-muted">${cs ? cs.title : ''}</span>
+                        </div>`;
+                    }).join('')}
+                    ${appData.tasks.filter(t => !t.completed).slice(0, 2).map(t => {
+                        const cs = appData.cases.find(c => c.id === t.caseId);
+                        return `<div onclick="openCase('${t.caseId}')" class="feed-item">
+                            <div class="flex-between text-red" style="font-size:0.75rem;font-weight:600;margin-bottom:4px"><span><i class="fa-solid fa-triangle-exclamation"></i> Due ${t.dueDate}</span><span>${t.priority}</span></div>
+                            <strong style="font-size:0.75rem;display:block">${t.title}</strong>
+                            <span class="text-muted">${cs ? cs.title : ''}</span>
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+function renderClients() {
+    const list = appData.clients.filter(c => !searchQuery || [c.name, c.company, c.email].some(v => (v || '').toLowerCase().includes(searchQuery)));
+    return `<div class="container-max">
+        <div class="page-header-card">
+            <div><h1 class="page-title"><i class="fa-solid fa-users text-blue"></i><span>Client Directory</span></h1><p class="page-subtitle">Manage individual and corporate client profiles, communication notes, and linked matters.</p></div>
+            <button onclick="openModal('new-client-modal')" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i><span>Add New Client</span></button>
+        </div>
+        <div class="cards-grid-3">
+            ${list.map(c => {
+                const count = appData.cases.filter(cs => cs.clientId === c.id).length;
+                return `<div class="client-card">
+                    <div>
+                        <div class="flex-between" style="align-items:flex-start;margin-bottom:0.75rem">
+                            <div class="flex-center">
+                                <div class="client-avatar">${c.name.slice(0, 2).toUpperCase()}</div>
+                                <div><h3 onclick="activeClientId='${c.id}';renderCurrentTab()" class="clickable" style="font-size:1rem">${c.name}</h3><span class="badge ${c.type === 'Corporate' ? 'badge-indigo' : 'badge-emerald'}">${c.type}</span></div>
+                            </div>
+                            <div>
+                                <button onclick="editClient('${c.id}')" class="btn-icon" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button onclick="deleteItem('clients','${c.id}','Client deleted.')" class="btn-icon danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div style="border-top:1px solid var(--slate-100);padding-top:1rem;margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;font-size:0.75rem">
+                            <div><i class="fa-solid fa-building text-muted" style="width:16px"></i> <strong>${c.company || 'N/A'}</strong></div>
+                            <div><i class="fa-solid fa-envelope text-muted" style="width:16px"></i> ${c.email}</div>
+                            <div><i class="fa-solid fa-phone text-muted" style="width:16px"></i> ${c.phone}</div>
+                            <div><i class="fa-solid fa-calendar-days text-muted" style="width:16px"></i> Intake: ${c.intake}</div>
+                        </div>
+                    </div>
+                    <div class="flex-between" style="border-top:1px solid var(--slate-100);padding-top:1rem;margin-top:1.25rem">
+                        <span class="text-muted"><i class="fa-solid fa-briefcase text-blue"></i> ${count} Linked Cases</span>
+                        <button onclick="activeClientId='${c.id}';renderCurrentTab()" class="btn-icon primary" style="font-size:0.75rem;font-weight:600">View Profile <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>`;
+            }).join('')}
+        </div>
+    </div>`;
+}
+
+function renderClientDetail(id) {
+    const c = appData.clients.find(x => x.id === id);
+    if (!c) return renderClients();
+    const linked = appData.cases.filter(cs => cs.clientId === id);
+    return `<div class="container-max">
+        <div class="page-header-card">
+            <div class="flex-center">
+                <button onclick="activeClientId=null;renderCurrentTab()" class="btn btn-soft"><i class="fa-solid fa-arrow-left"></i></button>
+                <div><div class="flex-center"><h1 class="page-title">${c.name}</h1><span class="badge badge-blue">${c.type}</span></div><p class="page-subtitle">${c.company || ''} • Intake Date: ${c.intake}</p></div>
+            </div>
+            <button onclick="editClient('${c.id}')" class="btn btn-soft">Edit Profile</button>
+        </div>
+        <div class="dashboard-split" style="grid-template-columns:1fr 2fr">
+            <div class="card" style="display:flex;flex-direction:column;gap:0.875rem">
+                <h3 class="form-label">Contact &amp; Billing Details</h3>
+                <div><span class="form-label">Email</span><p style="font-size:0.875rem;font-weight:500">${c.email}</p></div>
+                <div><span class="form-label">Phone</span><p style="font-size:0.875rem;font-weight:500">${c.phone}</p></div>
+                <div><span class="form-label">Organization</span><p style="font-size:0.875rem;font-weight:500">${c.company || 'N/A'}</p></div>
+                <div><span class="form-label">Notes</span><p class="feed-item" style="font-size:0.75rem;cursor:default">${c.notes || 'No notes recorded.'}</p></div>
+            </div>
+            <div class="card">
+                <h3 class="form-label" style="margin-bottom:1rem">Associated Cases (${linked.length})</h3>
+                <div style="display:flex;flex-direction:column;gap:0.75rem">
+                    ${linked.length ? linked.map(cs => `<div onclick="openCase('${cs.id}')" class="feed-item flex-between">
+                        <div><span class="font-mono text-blue" style="font-size:0.75rem;font-weight:700">${cs.number}</span> <span class="badge badge-slate">${cs.stage}</span><h4 style="font-size:0.875rem;margin-top:4px">${cs.title}</h4><p class="text-muted">Practice: ${cs.practice} • Attorney: ${cs.attorney}</p></div>
+                        <i class="fa-solid fa-chevron-right text-muted"></i>
+                    </div>`).join('') : '<p class="text-muted">No linked cases found.</p>'}
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+function renderCases() {
+    const list = appData.cases.filter(c => !searchQuery || [c.title, c.number, c.practice, c.attorney].some(v => v.toLowerCase().includes(searchQuery)));
+    return `<div class="container-max">
+        <div class="page-header-card">
+            <div><h1 class="page-title"><i class="fa-solid fa-briefcase text-blue"></i><span>Case Files &amp; Pipeline</span></h1><p class="page-subtitle">Structured case records, practice areas, priority levels, and interactive stage pipeline updates.</p></div>
+            <button onclick="openModal('new-case-modal')" class="btn btn-primary"><i class="fa-solid fa-plus"></i><span>Create New Case</span></button>
+        </div>
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead><tr><th>Case ID / Title</th><th>Client</th><th>Practice Area</th><th>Assigned Attorney</th><th>Priority</th><th>Stage Pipeline</th><th style="text-align:right">Actions</th></tr></thead>
+                <tbody>
+                    ${list.map(cs => {
+                        const cl = appData.clients.find(c => c.id === cs.clientId);
+                        const pBadge = cs.priority === 'Urgent' ? 'badge-red' : cs.priority === 'High' ? 'badge-amber' : 'badge-blue';
+                        return `<tr>
+                            <td><span onclick="openCase('${cs.id}')" class="font-mono text-blue clickable" style="font-size:0.75rem;font-weight:700;display:block">${cs.number}</span><strong onclick="openCase('${cs.id}')" class="clickable" style="color:var(--slate-900)">${cs.title}</strong></td>
+                            <td><strong>${cl ? cl.name : 'Unknown'}</strong></td>
+                            <td>${cs.practice}</td>
+                            <td>${cs.attorney}</td>
+                            <td><span class="badge ${pBadge}">${cs.priority}</span></td>
+                            <td><select onchange="updateCaseStage('${cs.id}',this.value)" class="stage-select">${STAGES.map(s => `<option value="${s}" ${cs.stage === s ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
+                            <td style="text-align:right;white-space:nowrap">
+                                <button onclick="openCase('${cs.id}')" class="btn-icon primary" title="Open"><i class="fa-solid fa-folder-open"></i></button>
+                                <button onclick="editCase('${cs.id}')" class="btn-icon" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button onclick="deleteCase('${cs.id}')" class="btn-icon danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>`;
+                    }).join('')}
+                </tbody>
+            </table>
+        </div>
+    </div>`;
+}
+
+function openCase(id) {
+    activeCaseId = id;
+    workspaceTab = 'timeline';
+    renderCurrentTab();
+}
+
+function renderCaseWorkspace(id) {
+    const cs = appData.cases.find(c => c.id === id);
+    if (!cs) return renderCases();
+    const cl = appData.clients.find(c => c.id === cs.clientId);
+    const hearings = appData.hearings.filter(h => h.caseId === id);
+    const tasks = appData.tasks.filter(t => t.caseId === id);
+    const docs = appData.documents.filter(d => d.caseId === id);
+    const acts = appData.activities.filter(a => a.caseId === id);
+    const curIdx = STAGES.indexOf(cs.stage);
+
+    return `<div class="container-max">
+        <div class="page-header-card">
+            <div class="flex-center">
+                <button onclick="activeCaseId=null;renderCurrentTab()" class="btn btn-soft"><i class="fa-solid fa-arrow-left"></i></button>
+                <div>
+                    <div class="flex-center"><span class="badge badge-blue font-mono">${cs.number}</span><span class="badge badge-slate">${cs.practice}</span></div>
+                    <h1 class="page-title" style="font-size:1.5rem;margin-top:4px">${cs.title}</h1>
+                    <p class="page-subtitle">Client: <strong>${cl ? cl.name : 'N/A'}</strong> • Lead Attorney: <strong>${cs.attorney}</strong></p>
+                </div>
+            </div>
+            <div class="flex-center">
+                <button onclick="openModal('new-hearing-modal','${cs.id}')" class="btn btn-soft"><i class="fa-solid fa-calendar-plus"></i><span>Add Hearing</span></button>
+                <button onclick="openModal('new-task-modal','${cs.id}')" class="btn btn-soft"><i class="fa-solid fa-list-check"></i><span>Add Task</span></button>
+                <button onclick="openModal('new-doc-modal','${cs.id}')" class="btn btn-primary"><i class="fa-solid fa-file-arrow-up"></i><span>Upload Doc</span></button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="flex-between" style="margin-bottom:1rem"><h3 class="form-label">Case Stage Pipeline</h3><span class="badge badge-blue">Current Stage: ${cs.stage}</span></div>
+            <div class="stepper-grid">
+                ${STAGES.map((st, idx) => `<div onclick="updateCaseStage('${cs.id}','${st}')" class="step-box ${st === cs.stage ? 'current' : idx < curIdx ? 'passed' : ''}">
+                    <span style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;opacity:0.8">Stage 0${idx + 1}</span>
+                    <strong style="font-size:0.75rem;display:block;margin-top:4px">${st}</strong>
+                </div>`).join('')}
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <div class="tabs-bar">
+                ${[['timeline', 'fa-timeline', `Timeline Activity (${acts.length})`], ['documents', 'fa-folder-open', `Documents (${docs.length})`], ['hearings', 'fa-scale-balanced', `Hearings (${hearings.length})`], ['tasks', 'fa-list-check', `Tasks & Deadlines (${tasks.length})`]]
+                    .map(([key, icon, label]) => `<button onclick="workspaceTab='${key}';renderCurrentTab()" class="tab-btn ${workspaceTab === key ? 'active' : ''}"><i class="fa-solid ${icon}"></i> ${label}</button>`).join('')}
+            </div>
+            <div style="padding:1.5rem">
+                ${workspaceTab === 'timeline' ? `<div class="timeline-list">${acts.length ? acts.map(a => `<div class="timeline-item"><div class="timeline-dot"></div><div class="feed-item" style="cursor:default"><div class="flex-between text-muted" style="margin-bottom:4px"><strong class="text-blue" style="text-transform:uppercase">${a.type}</strong><span>${a.date}</span></div><p style="font-size:0.875rem;font-weight:500">${a.text}</p></div></div>`).join('') : '<p class="text-muted">No recorded activities yet.</p>'}</div>` : ''}
+                ${workspaceTab === 'documents' ? `<div class="cards-grid-3">${docs.length ? docs.map(d => `<div class="row-item"><div><strong style="font-size:0.875rem;display:block">${d.title}</strong><span class="text-muted">${d.category} • ${d.uploadDate}</span></div><div class="flex-center"><span class="badge ${d.status === 'Filed' ? 'badge-emerald' : d.status === 'Reviewed' ? 'badge-blue' : 'badge-amber'}">${d.status}</span><button onclick="deleteItem('documents','${d.id}','Document removed.')" class="btn-icon danger"><i class="fa-solid fa-trash"></i></button></div></div>`).join('') : '<p class="text-muted">No documents uploaded.</p>'}</div>` : ''}
+                ${workspaceTab === 'hearings' ? `<div style="display:flex;flex-direction:column;gap:0.75rem">${hearings.length ? hearings.map(h => `<div class="row-item"><div><span class="text-blue" style="font-size:0.75rem;font-weight:600">${h.datetime.replace('T', ' ')} • ${h.courtroom}</span><strong style="font-size:0.875rem;display:block;margin:2px 0">${h.title}</strong><span class="text-muted">Prep: ${h.prepStatus}</span></div><button onclick="deleteItem('hearings','${h.id}','Hearing removed.')" class="btn-icon danger"><i class="fa-solid fa-trash"></i></button></div>`).join('') : '<p class="text-muted">No hearings scheduled.</p>'}</div>` : ''}
+                ${workspaceTab === 'tasks' ? `<div style="display:flex;flex-direction:column;gap:0.75rem">${tasks.length ? tasks.map(t => `<div class="row-item ${t.completed ? 'completed' : ''}"><div class="flex-center"><input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTask('${t.id}')"><div><strong class="${t.completed ? 'line-through' : ''}" style="font-size:0.875rem;display:block">${t.title}</strong><span class="text-muted">Due: ${t.dueDate} • ${t.assignee} • ${t.priority}</span></div></div><button onclick="deleteItem('tasks','${t.id}','Task deleted.')" class="btn-icon danger"><i class="fa-solid fa-trash"></i></button></div>`).join('') : '<p class="text-muted">No tasks created.</p>'}</div>` : ''}
+            </div>
+        </div>
+    </div>`;
+}
+
+function renderHearings() {
+    const list = appData.hearings.filter(h => !searchQuery || [h.title, h.courtroom].some(v => v.toLowerCase().includes(searchQuery)));
+    return `<div class="container-max">
+        <div class="page-header-card">
+            <div><h1 class="page-title"><i class="fa-solid fa-calendar-days text-blue"></i><span>Master Hearing Schedule</span></h1><p class="page-subtitle">Firm-wide court appearances, deposition sessions, and mediation timelines.</p></div>
+            <button onclick="openModal('new-hearing-modal')" class="btn btn-primary"><i class="fa-solid fa-calendar-plus"></i><span>Schedule Hearing</span></button>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:0.75rem">
+            ${list.map(h => {
+                const cs = appData.cases.find(c => c.id === h.caseId);
+                return `<div class="row-item">
+                    <div>
+                        <div class="flex-center text-blue" style="font-size:0.75rem;font-weight:600;margin-bottom:4px"><span><i class="fa-solid fa-calendar-days"></i> ${h.datetime.replace('T', ' ')}</span><span class="badge badge-blue">${cs ? cs.practice : 'Legal'}</span></div>
+                        <strong style="font-size:1rem;display:block">${h.title}</strong>
+                        <p class="text-muted">Case: <strong class="clickable" onclick="openCase('${h.caseId}')">${cs ? cs.title : 'N/A'}</strong> • Courtroom: <strong>${h.courtroom}</strong></p>
+                    </div>
+                    <div class="flex-center"><span class="badge badge-emerald">${h.prepStatus}</span><button onclick="openCase('${h.caseId}')" class="btn btn-primary btn-sm">Open Case</button></div>
+                </div>`;
+            }).join('')}
+        </div>
+    </div>`;
+}
+
+function renderTasks() {
+    const list = appData.tasks.filter(t => !searchQuery || [t.title, t.assignee].some(v => v.toLowerCase().includes(searchQuery)));
+    return `<div class="container-max">
+        <div class="page-header-card">
+            <div><h1 class="page-title"><i class="fa-solid fa-square-check text-blue"></i><span>Master Tasks &amp; Deadlines</span></h1><p class="page-subtitle">Track actionable checklists, attorney assignments, and hard statutory deadlines across all matters.</p></div>
+            <button onclick="openModal('new-task-modal')" class="btn btn-primary"><i class="fa-solid fa-plus"></i><span>Add New Task</span></button>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:0.75rem">
+            ${list.map(t => {
+                const cs = appData.cases.find(c => c.id === t.caseId);
+                const overdue = !t.completed && new Date(t.dueDate) < new Date();
+                return `<div class="row-item ${t.completed ? 'completed' : ''}">
+                    <div class="flex-center">
+                        <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTask('${t.id}')">
+                        <div>
+                            <strong class="${t.completed ? 'line-through' : ''}" style="font-size:0.875rem;display:block">${t.title}</strong>
+                            <p class="text-muted">Case: <strong class="clickable" onclick="openCase('${t.caseId}')">${cs ? cs.title : ''}</strong> • Due: <span class="${overdue ? 'text-red' : ''}">${t.dueDate}</span> • Assignee: ${t.assignee}</p>
+                        </div>
+                    </div>
+                    <div class="flex-center">
+                        <span class="badge ${t.priority === 'Urgent' ? 'badge-red' : 'badge-blue'}">${t.priority}</span>
+                        <button onclick="deleteItem('tasks','${t.id}','Task deleted.')" class="btn-icon danger"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>`;
+            }).join('')}
+        </div>
+    </div>`;
+}
+
+function deleteItem(collection, id, msg) {
+    appData[collection] = appData[collection].filter(x => x.id !== id);
+    saveStorage();
+    showToast(msg);
+    renderCurrentTab();
+}
+
+function deleteCase(id) {
+    if (confirm("Delete this case file and all associated records?")) {
+        ['cases', 'hearings', 'tasks', 'documents'].forEach(k => appData[k] = appData[k].filter(x => (x.caseId || x.id) !== id));
+        saveStorage();
+        showToast("Case file deleted.");
+        renderCurrentTab();
+    }
+}
+
+function updateCaseStage(id, stage) {
+    const cs = appData.cases.find(c => c.id === id);
+    if (cs && cs.stage !== stage) {
+        logActivity(id, `Case stage updated from ${cs.stage} to ${stage}`, 'stage');
+        cs.stage = stage;
+        saveStorage();
+        showToast(`Case stage updated to ${stage}`);
+        renderCurrentTab();
+    }
+}
+
+function toggleTask(id) {
+    const t = appData.tasks.find(x => x.id === id);
+    if (t) {
+        t.completed = !t.completed;
+        saveStorage();
+        showToast(t.completed ? "Task marked completed" : "Task marked active");
+        renderCurrentTab();
+    }
+}
+
+function handleCaseSubmit(e) {
+    e.preventDefault();
+    const editId = $('case-edit-id').value;
+    const item = {
+        id: editId || 'CS-' + Math.floor(100 + Math.random() * 900),
+        number: $('case-num').value, title: $('case-title').value, practice: $('case-practice').value,
+        clientId: $('case-client').value, attorney: $('case-attorney').value, opposing: $('case-opposing').value,
+        priority: $('case-priority').value, stage: $('case-stage').value, notes: $('case-notes').value, createdAt: today()
+    };
+    if (editId) {
+        appData.cases[appData.cases.findIndex(c => c.id === editId)] = item;
+        showToast("Case file updated successfully.");
+    } else {
+        appData.cases.unshift(item);
+        logActivity(item.id, `Case file created: ${item.title}`, 'stage');
+        showToast("New case file created successfully.");
+    }
+    saveStorage(); closeModal('new-case-modal'); e.target.reset(); $('case-edit-id').value = ''; renderCurrentTab();
+}
+
+function editCase(id) {
+    const cs = appData.cases.find(c => c.id === id);
+    if (!cs) return;
+    openModal('new-case-modal');
+    $('case-edit-id').value = cs.id; $('case-num').value = cs.number; $('case-title').value = cs.title;
+    $('case-practice').value = cs.practice; $('case-client').value = cs.clientId; $('case-attorney').value = cs.attorney;
+    $('case-opposing').value = cs.opposing || ''; $('case-priority').value = cs.priority; $('case-stage').value = cs.stage;
+    $('case-notes').value = cs.notes || '';
+    $('case-modal-title').innerHTML = `<i class="fa-solid fa-briefcase text-accent"></i><span>Edit Case File</span>`;
+}
+
+function handleClientSubmit(e) {
+    e.preventDefault();
+    const editId = $('client-edit-id').value;
+    const item = {
+        id: editId || 'c-' + Math.floor(100 + Math.random() * 900),
+        name: $('client-name').value, type: $('client-type').value, email: $('client-email').value,
+        phone: $('client-phone').value, company: $('client-company').value, intake: $('client-intake').value, notes: $('client-notes').value
+    };
+    if (editId) {
+        appData.clients[appData.clients.findIndex(c => c.id === editId)] = item;
+        showToast("Client profile updated.");
+    } else {
+        appData.clients.unshift(item);
+        showToast("New client added successfully.");
+    }
+    saveStorage(); closeModal('new-client-modal'); e.target.reset(); $('client-edit-id').value = ''; renderCurrentTab();
+}
+
+function editClient(id) {
+    const c = appData.clients.find(x => x.id === id);
+    if (!c) return;
+    openModal('new-client-modal');
+    $('client-edit-id').value = c.id; $('client-name').value = c.name; $('client-type').value = c.type;
+    $('client-email').value = c.email; $('client-phone').value = c.phone; $('client-company').value = c.company || '';
+    $('client-intake').value = c.intake; $('client-notes').value = c.notes || '';
+    $('client-modal-title').innerHTML = `<i class="fa-solid fa-user-pen text-accent"></i><span>Edit Client Profile</span>`;
+}
+
+function handleHearingSubmit(e) {
+    e.preventDefault();
+    const item = { id: 'h-' + Math.random(), caseId: $('hearing-case').value, title: $('hearing-title').value, datetime: $('hearing-datetime').value, courtroom: $('hearing-courtroom').value, prepStatus: $('hearing-status').value };
+    appData.hearings.unshift(item);
+    logActivity(item.caseId, `Hearing scheduled: ${item.title}`, 'hearing');
+    saveStorage(); closeModal('new-hearing-modal'); e.target.reset(); showToast("Hearing scheduled successfully."); renderCurrentTab();
+}
+
+function handleTaskSubmit(e) {
+    e.preventDefault();
+    const item = { id: 't-' + Math.random(), caseId: $('task-case').value, title: $('task-title').value, dueDate: $('task-due').value, priority: $('task-priority').value, assignee: $('task-assignee').value, completed: false };
+    appData.tasks.unshift(item);
+    logActivity(item.caseId, `Task added: ${item.title}`, 'task');
+    saveStorage(); closeModal('new-task-modal'); e.target.reset(); showToast("Task created successfully."); renderCurrentTab();
+}
+
+function handleDocSubmit(e) {
+    e.preventDefault();
+    const file = $('doc-file-input').files[0];
+    const fileName = file ? file.name : 'Exhibit_Document.pdf';
+    const item = { id: 'd-' + Math.random(), caseId: $('doc-case').value, title: $('doc-title').value || fileName, category: $('doc-category').value, uploadDate: today(), status: $('doc-status').value, fileType: fileName.split('.').pop().toUpperCase() || 'PDF' };
+    appData.documents.unshift(item);
+    logActivity(item.caseId, `Document uploaded: ${item.title}`, 'document');
+    saveStorage(); closeModal('new-doc-modal'); e.target.reset(); $('simulated-file-name').innerText = ''; showToast("Document uploaded successfully."); renderCurrentTab();
+}
+
+window.onload = () => { initStorage(); renderCurrentTab(); };
+
+    </script>
+</body>
+
+</html>
